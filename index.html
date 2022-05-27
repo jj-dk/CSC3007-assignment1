@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>CSC3007 Information Visualization Assignment 1</title>
+    <link
+      rel="stylesheet"
+      href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"
+    />
+    <link
+      href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- INCLUDING JQUERY-->
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+    <style>
+      table {
+        margin: 0 auto;
+        font-size: large;
+        border: 1px solid black;
+        text-align: center;
+      }
+
+      h1 {
+        text-align: center;
+        color: #000000;
+        font-size: xx-large;
+        font-family: "Arial", sans-serif;
+      }
+
+      th,
+      td {
+        background-color: #ffffff;
+        font-weight: bold;
+        padding: 10px;
+        color: #000000;
+        border: 1px solid black;
+      }
+
+      td {
+        background-color: #77dce7;
+        font-weight: lighter;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container" style="width: 100%">
+      <h1>
+        Last Updated:
+        <p id="timeStamp"></p>
+      </h1>
+      <table id="psiTable">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>National</th>
+            <th>Central</th>
+            <th>West</th>
+            <th>East</th>
+            <th>North</th>
+            <th>South</th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+
+    <script type="text/javascript">
+      $(document).ready(function () {
+        // fetch data from json file
+        $.getJSON(
+          "https://api.data.gov.sg/v1/environment/psi",
+          function (data) {
+            var timeStamp = data.items[0].update_timestamp;
+
+            var dateTime = new Intl.DateTimeFormat("en-SG", {
+              dateStyle: "full",
+              timeStyle: "long",
+            }).format(new Date(timeStamp));
+            var psiData = data.items[0].readings;
+            var tableData = "";
+
+            // iterate through objects
+            $.each(psiData, function (key, value) {
+              //construct rows with data from json object
+              tableData += "<tr>";
+
+              tableData += "<td>" + key + "</td>";
+
+              tableData += "<td>" + value.national + "</td>";
+
+              tableData += "<td>" + value.central + "</td>";
+
+              tableData += "<td>" + value.west + "</td>";
+
+              tableData += "<td>" + value.east + "</td>";
+
+              tableData += "<td>" + value.north + "</td>";
+
+              tableData += "<td>" + value.south + "</td>";
+
+              tableData += "</tr>";
+            });
+
+            //Insert rows into table
+            $("#psiTable").append(tableData);
+
+            //Insert timestamp
+            $("#timeStamp").append(dateTime);
+          }
+        );
+      });
+    </script>
+  </body>
+</html>

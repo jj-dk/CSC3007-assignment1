@@ -8,12 +8,22 @@
       href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"
     />
     <link
-      href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"
       rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
+      integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ=="
+      crossorigin="anonymous"
     />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- INCLUDING JQUERY-->
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+    <link
+      href="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.css"
+      rel="stylesheet"
+    />
+
+    <script src="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.js"></script>
 
     <style>
       table {
@@ -40,7 +50,7 @@
       }
 
       td {
-        background-color: #77dce7;
+        /* background-color: #77dce7; */
         font-weight: lighter;
       }
     </style>
@@ -52,16 +62,16 @@
         Last Updated:
         <p id="timeStamp"></p>
       </h1>
-      <table id="psiTable">
+      <table id="psiTable" class="table table-hover responsive nowrap">
         <thead>
           <tr>
-            <th>Metric</th>
-            <th>National</th>
-            <th>Central</th>
-            <th>West</th>
-            <th>East</th>
-            <th>North</th>
-            <th>South</th>
+            <th class="info" data-field="Metric">Metric</th>
+            <th class="active" data-field="National">National</th>
+            <th class="success" data-field="Central">Central</th>
+            <th class="warning" data-field="West">West</th>
+            <th class="danger" data-field="East">East</th>
+            <th class="info" data-field="North">North</th>
+            <th class="active" data-field="South">South</th>
           </tr>
         </thead>
       </table>
@@ -80,32 +90,26 @@
               timeStyle: "long",
             }).format(new Date(timeStamp));
             var psiData = data.items[0].readings;
-            var tableData = "";
+            var tableData = [];
 
             // iterate through objects
             $.each(psiData, function (key, value) {
               //construct rows with data from json object
-              tableData += "<tr>";
+              var newData = {
+                Metric: key,
+                National: value.national,
+                Central: value.central,
+                West: value.west,
+                East: value.east,
+                North: value.north,
+                South: value.south,
+              };
 
-              tableData += "<td>" + key + "</td>";
-
-              tableData += "<td>" + value.national + "</td>";
-
-              tableData += "<td>" + value.central + "</td>";
-
-              tableData += "<td>" + value.west + "</td>";
-
-              tableData += "<td>" + value.east + "</td>";
-
-              tableData += "<td>" + value.north + "</td>";
-
-              tableData += "<td>" + value.south + "</td>";
-
-              tableData += "</tr>";
+              tableData.push(newData);
             });
 
             //Insert rows into table
-            $("#psiTable").append(tableData);
+            $("#psiTable").bootstrapTable({ data: tableData });
 
             //Insert timestamp
             $("#timeStamp").append(dateTime);
